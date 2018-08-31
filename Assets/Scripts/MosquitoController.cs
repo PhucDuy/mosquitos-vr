@@ -22,74 +22,63 @@ public class MosquitoController : MonoBehaviour {
     bool isMoving = true;
 
     // target
-    Vector3 target;
+    public Transform target;
 
-	// Use this for initialization
-	void Awake () {
+    // Use this for initialization
+    void Awake () {
         //grab my vr interactive component
-        vrIntItem = GetComponent<VRInteractiveItem>();
+        vrIntItem = GetComponent<VRInteractiveItem> ();
 
         //grab the rigidbody component
-        rb = GetComponent<Rigidbody>();
-
-        //set target
-        target = Camera.main.transform.position;
+        rb = GetComponent<Rigidbody> ();
 
         //make the mosquito look at us
-        transform.LookAt(target);
-	}
+        transform.LookAt (target);
+    }
 
     // when our game object is enabled
-    void OnEnable()
-    {
+    void OnEnable () {
         vrIntItem.OnClick += HandleClick;
     }
 
     // when our game object is disabled
-    void OnDisable()
-    {
+    void OnDisable () {
         vrIntItem.OnClick -= HandleClick;
     }
 
     // this is called when the mosquito is clicked on
-    void HandleClick()
-    {
+    void HandleClick () {
         // check that it's moving
-        if(rb.isKinematic)
-        {
+        if (rb.isKinematic) {
             // rotate it's transform
-            transform.Rotate(new Vector3(0, 0, 180));
+            transform.Rotate (new Vector3 (0, 0, 180));
 
             // disable kinematic property
             rb.isKinematic = false;
 
             // set the flag to false
-            isMoving = false;            
+            isMoving = false;
         }
     }
 
     // Update is called once per frame
     void Update () {
-		// check that we are moving
-        if(isMoving)
-        {
+        // check that we are moving
+        if (isMoving) {
             //calculate distance from target
-            float distance = Vector3.Distance(transform.position, target);
+            float distance = Vector3.Distance (transform.position, target.position);
 
             //check min distance
-            if(distance <= minDistance)
-            {
+            if (distance <= minDistance) {
                 //we stop!
                 isMoving = false;
-            }
-            else
-            {
+            } else {
                 //calculate movement step: v = d / t --> d = v * t
                 float movementStep = speed * Time.deltaTime;
 
                 // move on that step
-                transform.position = Vector3.MoveTowards(transform.position, target, movementStep);
+                transform.position = Vector3.MoveTowards (transform.position, target.position, movementStep);
             }
         }
-	}
+    }
 }
